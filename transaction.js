@@ -4,8 +4,12 @@ const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io
 
 async function transaction() {
 
+    const from = '';
+    const to = '';
+    const privateKey = '';
+
     //  The parameter here is the "from" address.
-    const count = await web3.eth.getTransactionCount('0x30cA0Bb1141F9B8faFFcD5C9e56CF46D36f6B8A2');
+    const count = await web3.eth.getTransactionCount(from);
 
     const nonce = await web3.utils.toHex(count);
 
@@ -15,11 +19,11 @@ async function transaction() {
     const value = await web3.utils.toHex(100000000000);
 
     //  This is the "to" address.
-    web3.eth.defaultAccount = '0xCB9231A875810da2E584d6F6322cf3Db518a5531';
+    web3.eth.defaultAccount = to;
 
     const rawtx = {
-        from: '0x30cA0Bb1141F9B8faFFcD5C9e56CF46D36f6B8A2',
-        to: '0xCB9231A875810da2E584d6F6322cf3Db518a5531',
+        from,
+        to,
         value,
         gas: web3.utils.toHex(21000),
         gasPrice: web3.utils.toHex(gasPrice),
@@ -29,7 +33,7 @@ async function transaction() {
     const tx = new Tx(rawtx);
 
     // This is the private key of the sender.
-    const pkey = Buffer.from('8c741bd6c3a9f907b0f2c736acf80714221143f151dec5c1cfaba7a6dfbad2d7', 'hex');
+    const pkey = Buffer.from(privateKey, 'hex');
     
     tx.sign(pkey);
     const stringTx = `0x${tx.serialize().toString('hex')}`;

@@ -26,23 +26,26 @@ const getRequest = async ({ url }) => {
 async function sendToken() {
 
     // This is the sender address.
-    const from = '0x703Ad25eb1c7B67988b0F1Eae0dCF3678CA79558';
+    const from = '';
 
     //  This is the recipient address.
-    const to = '0x0e6dCb1770585E18C6FcFa743cf3aa231C3fCeDF';
+    const to = '';
 
     //  This is the amount of token to be transferred.
-    const amount = 50000000000000000000;
+    const amount;
     const value = await web3.utils.toHex(amount);
 
     //  Contract address of the token to be transferred.
-    const contractAddress = '0x101848D5C5bBca18E6b4431eEdF6B95E9ADF82FA';
+    const contractAddress = '';
+
+    //  Private key of the sender
+    const privateKey = ''
 
     const gasPrice = await web3.eth.getGasPrice();
     const count = await web3.eth.getTransactionCount(from);
     
     //  This is the private key of the sender.
-    var privKey = new Buffer.from('3d80f7f644b0943a20cb123246c67a98eef8a2d9caf6e44773288672f7ae2a24', 'hex');
+    var privKey = new Buffer.from(privateKey, 'hex');
     
     //  This is the API to get the token contract ABI. Use this code instead of the above one on line 49.
     const url = 'https://api.etherscan.io/api?module=contract&action=getabi&address=0xdAC17F958D2ee523a2206206994597C13D831ec7&apikey=C2VBJIH1PWRNFDA2ZT1P3W26NGESGCBUAN';
