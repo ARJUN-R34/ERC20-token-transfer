@@ -7,6 +7,13 @@ async function transaction() {
     const from = '';
     const to = '';
     const privateKey = '';
+    
+    //	If user enters the handlename instead of public address
+    const MyHNContract = new web3.eth.Contract(abiHNRegistry, '0xd4680db560a9d002f0e4884bf9423753be709cdf');
+
+    //	This will return the public address of the user whose handlename has been passed in the "to" field.
+    const to = await MyHNContract.methods.resolveAddressOfHandleName('0x8102Eee36079E523840c57b45315e0571BFFEAC9', web3.utils.toHex(userHandleName)).call();
+
 
     //  The parameter here is the "from" address.
     const count = await web3.eth.getTransactionCount(from);
