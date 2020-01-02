@@ -26,20 +26,20 @@ const getRequest = async ({ url }) => {
 async function sendToken() {
 
     // This is the sender address.
-    const from = '';
+    const from;
 
     //  This is the recipient address.
-    const to = '';
+    const to;
 
     //  This is the amount of token to be transferred.
     const amount;
     const value = await web3.utils.toHex(amount);
 
     //  Contract address of the token to be transferred.
-    const contractAddress = '';
+    const contractAddress;
 
     //  Private key of the sender
-    const privateKey = ''
+    const privateKey
 
     const gasPrice = await web3.eth.getGasPrice();
     const count = await web3.eth.getTransactionCount(from);
@@ -48,7 +48,8 @@ async function sendToken() {
     var privKey = new Buffer.from(privateKey, 'hex');
     
     //  This is the API to get the token contract ABI. Use this code instead of the above one on line 49.
-    const url = 'https://api.etherscan.io/api?module=contract&action=getabi&address=0xdAC17F958D2ee523a2206206994597C13D831ec7&apikey=C2VBJIH1PWRNFDA2ZT1P3W26NGESGCBUAN';
+    // const url = 'https://api.etherscan.io/api?module=contract&action=getabi&address=0xdAC17F958D2ee523a2206206994597C13D831ec7&apikey=C2VBJIH1PWRNFDA2ZT1P3W26NGESGCBUAN';
+    const url = 'https://api-ropsten.etherscan.io/api?module=contract&action=getabi&address={contractAddress}&apikey=C2VBJIH1PWRNFDA2ZT1P3W26NGESGCBUAN'
 
     const { error, data } = await getRequest({url});
 
@@ -83,10 +84,7 @@ async function sendToken() {
             console.log('Transaction Hash ' + hash);
         }).on('error', function (error) {
             console.log('Error ' + error);
-        })
-            .on('confirmation', function (confirmationNumber, receipt) {
-                console.log(`Confirmation Number & Receipt ', ${confirmationNumber}, ${receipt}`);
-            });
+        });
         console.log(response);
         return response;
     } catch (error) {
