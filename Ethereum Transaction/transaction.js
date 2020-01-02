@@ -13,20 +13,16 @@ const abiHNRegistry = path.join(__dirname, 'HN contract ABI.json');
 async function transaction() {
 
     const fromAddress;
-    const toAddress;
     const privateKey;
     const amount;
+    const toAddress;
 
-    //  If user enters handlename
+    //  If user enters handlename, start here,
     const handlename;
-    
-    //	If user enters the handlename instead of public address
     const MyHNContract = new web3.eth.Contract(JSON.parse(abiHNRegistry), '0xd4680db560a9d002f0e4884bf9423753be709cdf');
+    const toAddress = await MyHNContract.methods.resolveAddressOfHandleName('0x8102Eee36079E523840c57b45315e0571BFFEAC9', web3.utils.toHex(handlename)).call();
+    //  End.   
 
-    //	This will return the public address of the user whose handlename has been passed in the "to" field.
-    const toHandlename = await MyHNContract.methods.resolveAddressOfHandleName('0x8102Eee36079E523840c57b45315e0571BFFEAC9', web3.utils.toHex(handlename)).call();
-
-    //  The parameter here is the "from" address.
     const count = await web3.eth.getTransactionCount(fromAddress);
 
     const nonce = await web3.utils.toHex(count);
@@ -41,7 +37,7 @@ async function transaction() {
 
     const rawtx = {
         fromAddress,
-        to: {toAddress or toHandlename},
+        to: toAddress,
         value,
         gas: web3.utils.toHex(21000),
         gasPrice: web3.utils.toHex(gasPrice),
