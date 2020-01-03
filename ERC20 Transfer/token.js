@@ -29,7 +29,13 @@ async function sendToken() {
     const from;
 
     //  This is the recipient address.
-    const to;
+    const toAddress;
+
+    //  If user enters handlename, start here,
+    const handlename;
+    const MyHNContract = new web3.eth.Contract(JSON.parse(abiHNRegistry), '0xd4680db560a9d002f0e4884bf9423753be709cdf');
+    const toAddress = await MyHNContract.methods.resolveAddressOfHandleName('0x8102Eee36079E523840c57b45315e0571BFFEAC9', web3.utils.toHex(handlename)).call();
+    //  End.
 
     //  This is the amount of token to be transferred.
     const amount;
@@ -70,7 +76,7 @@ async function sendToken() {
         gasLimit: web3.utils.toHex(500000),
         to: contractAddress,
         value: "0x0",
-        data: contract.methods.transfer(to, value).encodeABI(),
+        data: contract.methods.transfer(toAddress, value).encodeABI(),
         chainId: 0x03
     };
 
