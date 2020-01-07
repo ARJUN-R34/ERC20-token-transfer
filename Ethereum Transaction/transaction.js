@@ -1,69 +1,29 @@
-const Web3 = require('web3');
-const Tx = require('ethereumjs-tx');
-var fs = require('fs');
-var path = require('path');
-
-const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/b3a845111c5f4e3eaf646c79bcb4d4c0'));
-
-var jsonPath = path.join(__dirname, 'HN contract ABI.json');
-var abiHNRegistry = fs.readFileSync(jsonPath, 'utf8');
-
-const abiHNRegistry = path.join(__dirname, 'HN contract ABI.json');
+const ethers = require('ethers');
+let provider = new ethers.providers.InfuraProvider(3, "b3a845111c5f4e3eaf646c79bcb4d4c0");
+provider.apiAccessToken = '943e3d0b06c74ce2ba1442c0de5d7809';
 
 async function transaction() {
-
-    const fromAddress;
-    const privateKey;
-    const amount;
-    const toAddress;
-
-    //  If user enters handlename, start here,
-    const handlename;
-    const MyHNContract = new web3.eth.Contract(JSON.parse(abiHNRegistry), '0xd4680db560a9d002f0e4884bf9423753be709cdf');
-    const toAddress = await MyHNContract.methods.resolveAddressOfHandleName('0x8102Eee36079E523840c57b45315e0571BFFEAC9', web3.utils.toHex(handlename)).call();
-    //  End.   
-
-    const count = await web3.eth.getTransactionCount(fromAddress);
-
-    const nonce = await web3.utils.toHex(count);
-
-    const gasPrice = await web3.eth.getGasPrice();
-
-    //  The amount of Ether to send.
-    const value = await web3.utils.toHex(amount);
-
-    //  This is the "to" address.
-    web3.eth.defaultAccount = toAddress;
-
-    const rawtx = {
-        fromAddress,
-        to: toAddress,
-        value,
-        gas: web3.utils.toHex(21000),
-        gasPrice: web3.utils.toHex(gasPrice),
-        nonce,
-    };
-
-    const tx = new Tx(rawtx);
-
-    // This is the private key of the sender.
-    const pkey = Buffer.from(privateKey, 'hex');
+    let privateKey = '0x80583164092334ADE24073EE7B5E51890B464C21EB5E17DE153776A6ADE7387A';
+    let wallet = new ethers.Wallet(privateKey, provider);
+    let value = '0.5';
+    let to = '0x7F36aaACbc03C055d52C7E4aFF8aAA22E2Bc306a';
     
-    tx.sign(pkey);
-    const stringTx = `0x${tx.serialize().toString('hex')}`;
+    const balance = await wallet.getBalance();
+    console.log(balance);
+
+    const amount = ethers.utils.parseEther(value);
+    console.log(amount);
 
     try {
-        const response = await web3.eth.sendSignedTransaction(stringTx).on('transactionHash', function (hash) {
-            console.log('Transaction Hash ' + hash);
-        }).on('error', function (error) {
-            console.log('Error ' + error);
+        const transaction = await wallet.sendTransaction({
+            to,
+            value: amount
         });
-        console.log(response);
-        return response;
-    } catch (error) {
-        return error;
-    }
 
+        console.log('Sent in Transaction: ' + transaction.hash);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 transaction();
