@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/Ethereum Transaction/transaction.js"
+            "program": "${workspaceFolder}/ERC20 Transfer/token.js"
         }
     ]
 }

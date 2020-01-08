@@ -1,10 +1,13 @@
-var fs = require('fs');
-var path = require('path');
-const Tx = require('ethereumjs-tx');
+// const Tx = require('ethereumjs-tx');
+const ethers = require('ethers');
 const axios = require('axios');
+const web3 = require('web3');
 
-const Web3 = require('web3');
-const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/b3a845111c5f4e3eaf646c79bcb4d4c0'));
+let provider = new ethers.providers.InfuraProvider(3, "b3a845111c5f4e3eaf646c79bcb4d4c0");
+provider.apiAccessToken = '943e3d0b06c74ce2ba1442c0de5d7809';
+
+// const Web3 = require('web3');
+// const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/b3a845111c5f4e3eaf646c79bcb4d4c0'));
 
 //  Function for the get Request.
 const getRequest = async ({ url }) => {
@@ -23,38 +26,33 @@ const getRequest = async ({ url }) => {
     }
 };
 
+async function getAddressOfhandlename(payload) {
+    const { handlename } = payload;
+
+    const HNContractAddress = '0xd4680db560a9d002f0e4884bf9423753be709cdf';
+    const vendorAddress = '0x8102Eee36079E523840c57b45315e0571BFFEAC9'
+
+    var jsonPath = path.join(__dirname, 'HN contract ABI.json');
+    var abiHNRegistry = fs.readFileSync(jsonPath, 'utf8');
+
+    let MyHNContract = new ethers.Contract(HNContractAddress, JSON.parse(abiHNRegistry), provider);
+
+    const toAddress = await MyHNContract.resolveAddressOfHandleName(vendorAddress, web3.utils.toHex(handlename));
+
+    return toAddress;
+}
+
 async function sendToken() {
 
-    // This is the sender address.
-    const from;
+    // //  This is the recipient address.
+    const to;
 
-    //  This is the recipient address.
-    const toAddress;
-
-    //  If user enters handlename, start here,
+    // //  If user enters handlename, start here,
     const handlename;
-    const MyHNContract = new web3.eth.Contract(JSON.parse(abiHNRegistry), '0xd4680db560a9d002f0e4884bf9423753be709cdf');
-    const toAddress = await MyHNContract.methods.resolveAddressOfHandleName('0x8102Eee36079E523840c57b45315e0571BFFEAC9', web3.utils.toHex(handlename)).call();
-    //  End.
+    const to = await getAddressOfhandlename({ handlename });
+    // //  End.
 
-    //  This is the amount of token to be transferred.
-    const amount;
-    const value = await web3.utils.toHex(amount);
-
-    //  Contract address of the token to be transferred.
-    const contractAddress;
-
-    //  Private key of the sender
-    const privateKey
-
-    const gasPrice = await web3.eth.getGasPrice();
-    const count = await web3.eth.getTransactionCount(from);
-    
-    //  This is the private key of the sender.
-    var privKey = new Buffer.from(privateKey, 'hex');
-    
     //  This is the API to get the token contract ABI. Use this code instead of the above one on line 49.
-    // const url = 'https://api.etherscan.io/api?module=contract&action=getabi&address=0xdAC17F958D2ee523a2206206994597C13D831ec7&apikey=C2VBJIH1PWRNFDA2ZT1P3W26NGESGCBUAN';
     const url = 'https://api-ropsten.etherscan.io/api?module=contract&action=getabi&address={contractAddress}&apikey=C2VBJIH1PWRNFDA2ZT1P3W26NGESGCBUAN'
 
     const { error, data } = await getRequest({url});
@@ -66,35 +64,26 @@ async function sendToken() {
     //  The ABI will be returned in the result.
     const { result } = data;
 
-    //  This is to create the instance of the token contract deployed in Ethereum.
-    const contract = new web3.eth.Contract(JSON.parse(result), contractAddress);
+    let privateKey;
+    let wallet = new ethers.Wallet(privateKey, provider);
 
-    var rawTransaction = {
-        from: from,
-        nonce: web3.utils.toHex(count),
-        gasPrice: web3.utils.toHex(gasPrice),
-        gasLimit: web3.utils.toHex(500000),
-        to: contractAddress,
-        value: "0x0",
-        data: contract.methods.transfer(toAddress, value).encodeABI(),
-        chainId: 0x03
-    };
+    var contractAddress;
+    var contract = new ethers.Contract(contractAddress, JSON.parse(result), wallet);
 
-    var tx = new Tx(rawTransaction);
-
-    tx.sign(privKey);
-    var serializedTx = tx.serialize();
+    // How many tokens?
+    var numberOfDecimals = 18;
+    var numberOfTokens = ethers.utils.parseUnits('1.0', numberOfDecimals);
 
     try {
-        const response = await web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex')).on('transactionHash', function (hash) {
-            console.log('Transaction Hash ' + hash);
-        }).on('error', function (error) {
-            console.log('Error ' + error);
+        const transaction = await wallet.sendTransaction({
+            to: contractAddress,
+            value: '0x00',
+            data: await contract.transfer(to, numberOfTokens),
         });
-        console.log(response);
-        return response;
+    
+        console.log("Transaction data : " + transaction);
     } catch (error) {
-        console.log("Error : ", error );
+        console.log(error);
     }
 
 };
