@@ -9,13 +9,13 @@ provider.apiAccessToken = '943e3d0b06c74ce2ba1442c0de5d7809';
 async function getAddressOfhandlename(payload) {
     const { handlename } = payload;
 
-    const contractAddress = '0xd4680db560a9d002f0e4884bf9423753be709cdf';
+    const HNContractAddress = '0xd4680db560a9d002f0e4884bf9423753be709cdf';
     const vendorAddress = '0x8102Eee36079E523840c57b45315e0571BFFEAC9'
 
     var jsonPath = path.join(__dirname, 'HN contract ABI.json');
     var abiHNRegistry = fs.readFileSync(jsonPath, 'utf8');
 
-    let MyHNContract = new ethers.Contract(contractAddress, JSON.parse(abiHNRegistry), provider);
+    let MyHNContract = new ethers.Contract(HNContractAddress, JSON.parse(abiHNRegistry), provider);
 
     const toAddress = await MyHNContract.resolveAddressOfHandleName(vendorAddress, web3.utils.toHex(handlename));
     
