@@ -1,7 +1,9 @@
-const web3 = require('web3');
+const Web3 = require('web3');
 const ethers = require('ethers');
 var fs = require('fs');
 var path = require('path');
+
+const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/b3a845111c5f4e3eaf646c79bcb4d4c0'));
 
 let provider = new ethers.providers.InfuraProvider(3, "b3a845111c5f4e3eaf646c79bcb4d4c0");
 provider.apiAccessToken = '943e3d0b06c74ce2ba1442c0de5d7809';
@@ -18,31 +20,36 @@ async function getAddressOfhandlename(payload) {
     let MyHNContract = new ethers.Contract(HNContractAddress, JSON.parse(abiHNRegistry), provider);
 
     const toAddress = await MyHNContract.resolveAddressOfHandleName(vendorAddress, web3.utils.toHex(handlename));
-    
+
     return toAddress;
 }
 
-async function transaction() {
-    let privateKey = '0xAB710B192599FCDBF7ADEA756913720978D1F4E0AD6498AAE6EE5719290687D1';
+async function advancedTransaction() {
+    let privateKey;
     let wallet = new ethers.Wallet(privateKey, provider);
-    let value = '0.0001';
-    let to = '0xDfA82120e0E088AD9f1c3d46a0606e0cf19554d3';
+    let value;
+    let to;
+    let customGasPrice;
 
     //  If user enters handlename
-    // let handlename;
+    let handlename;
 
-    // const to = await getAddressOfhandlename({ handlename });
+    const to = await getAddressOfhandlename({ handlename });
     //  End
-    
+
+    const gasPrice = await web3.eth.getGasPrice()
+    console.log(gasPrice);
+
     const balance = await wallet.getBalance();
-    console.log("Balance : ", balance);
+    console.log(balance);
 
     const amount = ethers.utils.parseEther(value);
-    console.log("Amount : ", amount);
+    console.log(amount);
 
     try {
         const transaction = await wallet.sendTransaction({
             to,
+            gasPrice: web3.utils.toHex(customGasPrice),
             value: amount
         });
 
@@ -52,4 +59,4 @@ async function transaction() {
     }
 }
 
-transaction();
+advancedTransaction();
