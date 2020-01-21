@@ -25,11 +25,14 @@ async function getAddressOfhandlename(payload) {
 }
 
 async function advancedTransaction() {
-    let privateKey;
+    let privateKey = '80583164092334ADE24073EE7B5E51890B464C21EB5E17DE153776A6ADE7387A';
     let wallet = new ethers.Wallet(privateKey, provider);
     let value;
     let to;
-    let customGasPrice;
+    let customGasPrice;     //  in Gwei
+
+    let customGasPriceInWei = web3.utils.toWei(customGasPrice, 'gwei')
+    console.log('custom gas price in wei', customGasPriceInWei)
 
     //  If user enters handlename
     let handlename;

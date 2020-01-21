@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/Ethereum Transaction/advanced-transaction.js"
+            "program": "${workspaceFolder}/Ethereum Transaction/transaction.js"
         }
     ]
 }

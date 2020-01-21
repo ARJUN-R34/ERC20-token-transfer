@@ -45,15 +45,16 @@ async function getAddressOfhandlename(payload) {
 async function sendToken() {
 
     // //  This is the recipient address.
-    const to;
+    const to = '0x7F36aaACbc03C055d52C7E4aFF8aAA22E2Bc306a';
+    const contractAddress = '0x101848d5c5bbca18e6b4431eedf6b95e9adf82fa'
 
     // //  If user enters handlename, start here,
-    const handlename;
-    const to = await getAddressOfhandlename({ handlename });
+    // const handlename;
+    // const to = await getAddressOfhandlename({ handlename });
     // //  End.
 
     //  This is the API to get the token contract ABI. Use this code instead of the above one on line 49.
-    const url = 'https://api-ropsten.etherscan.io/api?module=contract&action=getabi&address={contractAddress}&apikey=C2VBJIH1PWRNFDA2ZT1P3W26NGESGCBUAN'
+    const url = 'https://api-ropsten.etherscan.io/api?module=contract&action=getabi&address=0x101848d5c5bbca18e6b4431eedf6b95e9adf82fa&apikey=C2VBJIH1PWRNFDA2ZT1P3W26NGESGCBUAN'
 
     const { error, data } = await getRequest({url});
 
@@ -64,24 +65,23 @@ async function sendToken() {
     //  The ABI will be returned in the result.
     const { result } = data;
 
-    let privateKey;
+    let privateKey = '80583164092334ADE24073EE7B5E51890B464C21EB5E17DE153776A6ADE7387A';
     let wallet = new ethers.Wallet(privateKey, provider);
 
-    var contractAddress;
     var contract = new ethers.Contract(contractAddress, JSON.parse(result), wallet);
 
     // How many tokens?
     var numberOfDecimals = 18;
-    var numberOfTokens = ethers.utils.parseUnits('1.0', numberOfDecimals);
+    var numberOfTokens = ethers.utils.parseUnits('199.0', numberOfDecimals);
 
     try {
         const transaction = await wallet.sendTransaction({
             to: contractAddress,
-            value: '0x00',
-            data: await contract.transfer(to, numberOfTokens),
-        });
-    
-        console.log("Transaction data : " + transaction);
+            value: '0x0',
+            data: web3.utils.toHex(await contract.transfer(to, numberOfTokens)),
+        })
+            
+        console.log("Transaction data : " + transaction.hash);
     } catch (error) {
         console.log(error);
     }

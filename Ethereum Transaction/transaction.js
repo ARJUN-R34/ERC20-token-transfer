@@ -1,7 +1,9 @@
-const web3 = require('web3');
+const Web3 = require('web3');
 const ethers = require('ethers');
 var fs = require('fs');
 var path = require('path');
+
+const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/b3a845111c5f4e3eaf646c79bcb4d4c0'));
 
 let provider = new ethers.providers.InfuraProvider(3, "b3a845111c5f4e3eaf646c79bcb4d4c0");
 provider.apiAccessToken = '943e3d0b06c74ce2ba1442c0de5d7809';
@@ -23,10 +25,10 @@ async function getAddressOfhandlename(payload) {
 }
 
 async function transaction() {
-    let privateKey = '0xAB710B192599FCDBF7ADEA756913720978D1F4E0AD6498AAE6EE5719290687D1';
+    let privateKey = '0x80583164092334ADE24073EE7B5E51890B464C21EB5E17DE153776A6ADE7387A';
     let wallet = new ethers.Wallet(privateKey, provider);
-    let value = '0.0001';
-    let to = '0xDfA82120e0E088AD9f1c3d46a0606e0cf19554d3';
+    let value = '0.05';
+    let to = '0x7F36aaACbc03C055d52C7E4aFF8aAA22E2Bc306a';
 
     //  If user enters handlename
     // let handlename;
@@ -47,6 +49,11 @@ async function transaction() {
         });
 
         console.log('Sent in Transaction: ' + transaction.hash);
+
+        provider.waitForTransaction(transaction.hash).then((receipt) => {
+            console.log('Transaction receipt : ', receipt);
+        });
+
     } catch (error) {
         console.log(error);
     }
