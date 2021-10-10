@@ -3,11 +3,11 @@ const ethers = require('ethers');
 const axios = require('axios');
 const web3 = require('web3');
 
-let provider = new ethers.providers.InfuraProvider(3, "b3a845111c5f4e3eaf646c79bcb4d4c0");
+let provider = new ethers.providers.InfuraProvider(3, "{{YOUR_INFURA_KEY}}");
 provider.apiAccessToken = '943e3d0b06c74ce2ba1442c0de5d7809';
 
 // const Web3 = require('web3');
-// const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/b3a845111c5f4e3eaf646c79bcb4d4c0'));
+// const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/{{YOUR_INFURA_KEY}}'));
 
 //  Function for the get Request.
 const getRequest = async ({ url }) => {
@@ -54,7 +54,7 @@ async function sendToken() {
     // //  End.
 
     //  This is the API to get the token contract ABI. Use this code instead of the above one on line 49.
-    const url = 'https://api-ropsten.etherscan.io/api?module=contract&action=getabi&address=0x101848d5c5bbca18e6b4431eedf6b95e9adf82fa&apikey=C2VBJIH1PWRNFDA2ZT1P3W26NGESGCBUAN'
+    const url = 'https://api-ropsten.etherscan.io/api?module=contract&action=getabi&address=0x101848d5c5bbca18e6b4431eedf6b95e9adf82fa&apikey={{YOUR_ETHERSCAN_KEY}}'
 
     const { error, data } = await getRequest({url});
 
